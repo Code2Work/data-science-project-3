@@ -1,7 +1,7 @@
 import psycopg2
 
 ## Bu değeri localinde çalışırken kendi passwordün yap. Ama kodu pushlarken 'postgres' olarak bırak.
-password = 'postgres'
+password = '12345'
 
 def connect_db():
     conn = psycopg2.connect(
@@ -16,7 +16,12 @@ def connect_db():
 def question_1_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT DATE_TRUNC('month', enrollment_date) AS month,
+                    COUNT(*) AS registration_count
+                    FROM enrollments
+                    GROUP BY DATE_TRUNC('month', enrollment_date)
+                    ORDER BY month;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -27,7 +32,10 @@ def question_1_query():
 def question_2_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT DATE_PART('year', enrollment_date) AS year,
+                    *
+                    FROM enrollments;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -38,7 +46,9 @@ def question_2_query():
 def question_3_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT SUM(age) AS total_age
+                    FROM students;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -49,7 +59,9 @@ def question_3_query():
 def question_4_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT COUNT(course_id) AS course_count
+                    FROM courses;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -60,7 +72,9 @@ def question_4_query():
 def question_5_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT AVG(age) AS average_age
+                    FROM students;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -71,7 +85,11 @@ def question_5_query():
 def question_6_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT course_id,
+                    MIN(enrollment_date) AS first_enrollment
+                    FROM enrollments
+                    GROUP BY course_id;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -83,7 +101,13 @@ def question_6_query():
 def question_7_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT c.course_name,
+                    AVG(s.age) AS avg_age
+                    FROM enrollments e
+                    JOIN students s ON e.student_id = s.student_id
+                    JOIN courses c ON e.course_id = c.course_id
+                    GROUP BY c.course_name;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -94,7 +118,9 @@ def question_7_query():
 def question_8_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute("""SELECT MIN(age) AS youngest_age
+                    FROM students;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -104,7 +130,12 @@ def question_8_query():
 def question_9_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute("""""")
+    cursor.execute("""SELECT c.course_name,
+                    COUNT(e.student_id) AS student_count
+                    FROM enrollments e
+                    JOIN courses c ON e.course_id = c.course_id
+                    GROUP BY c.course_name;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -115,7 +146,10 @@ def question_9_query():
 def question_10_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute("""""")
+    cursor.execute("""SELECT DISTINCT c.course_name
+                    FROM enrollments e
+                    JOIN courses c ON e.course_id = c.course_id;
+                    """)
     data = cursor.fetchall()
     cursor.close()
     connection.close()
